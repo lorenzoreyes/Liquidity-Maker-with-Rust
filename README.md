@@ -1,6 +1,6 @@
 # This project is my approach for the Keyrock-Challenge with Rust
 *** Also this documents aims to record my walkthrough in this journey
-*** As a developer I aim that my code speak for itself and on my behalf
+
 
 ### Disclaimer: The pythonWay is a python approach that I did in order
 ### to have an image of what were the steps needed to do the challenge.
