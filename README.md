@@ -1,4 +1,4 @@
-# This project ia my approach for the Keyrock-Challenge for Rust
+# This project is my approach for the Keyrock-Challenge with Rust
 *** Also this documents aims to record my walkthrough in this journey
 *** As a developer I aim that my code speak for itself and on my behalf
 
@@ -21,8 +21,8 @@ The goals aimed for the software include:
 MENTAL NOTE: I am afraid yet excited to see what results I gain.
 
 TO DO:
-(1) Connection to Websockets - [x]
-(2) Merge Connections - [ ]
-(3) Pulls orderbooks bids & asks - [x]
-(4) Merge and sort orderbooks - [ ]
-(5) Obtain the spread (ask-bid/ask), top ten bids, top ten asks && publish it as a stream.- [ ]
+- [x] (1) Connection to Websockets 
+- [ ] (2) Merge Connections 
+- [x] (3) Pulls orderbooks bids & asks 
+- [ ] (4) Merge and sort orderbooks 
+- [ ] (5) Obtain the spread (ask-bid/ask), top ten bids, top ten asks && publish it as a stream.
