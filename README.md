@@ -18,5 +18,11 @@ The goals aimed for the software include:
  (4) From the result publish the spread, top ten bid & asks through gRPC server as a stream.
 
 
-MENTAL NOTE: I am afraid yet excited to do my best and see what results I gain.
-# keyrock
+MENTAL NOTE: I am afraid yet excited to see what results I gain.
+
+TO DO:
+(1) Connection to Websockets - [x]
+(2) Merge Connections - [ ]
+(3) Pulls orderbooks bids & asks - [x]
+(4) Merge and sort orderbooks - [ ]
+(5) Obtain the spread (ask-bid/ask), top ten bids, top ten asks && publish it as a stream.- [ ]
