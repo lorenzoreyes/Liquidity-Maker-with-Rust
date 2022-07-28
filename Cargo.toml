@@ -6,7 +6,16 @@ edition = "2021"
 #email = "lreyes@udesa.edu.ar"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[[bin]]
+name = "binance"
+path = "src/binance.rs"
+
+[[bin]]
+name = "bitstamp"
+path = "src/bitstamp.rs"
+
 [dependencies]
+derivative = "2.2.0"
 protobuf = "3.1.0"
 serde = { version = "1.0", features = ["derive"]}
 serde_json = "1.0"

@@ -4,15 +4,15 @@ use serde_json::json;
 use std::time::Instant;
 use tungstenite::{connect, Message};
 use url::Url;
-pub mod bit_mod;
-use bit_mod::Msg;
-//pub mod binance;
-//use binance::binance_streams;
-//pub mod models;
 
+#[derive(Serialize, Deserialize, Debug)]
+struct Msg {
+    channel: String,
+    event: String,
+}
+
+// for test change the name of the function to main 
 fn main() {
-    //binance_streams();
-    //println!("{}",b);
     // Connect to Bitstamp.net
     let (mut socket, _response) =
         connect(Url::parse("wss://ws.bitstamp.net").unwrap()).expect("Can't connect");
@@ -32,6 +32,7 @@ fn main() {
         let result: Result<Msg, serde_json::Error> = serde_json::from_str(msg.to_text().unwrap());
 
         println!("{:?}",&result);
+        break
     }
 }
 
