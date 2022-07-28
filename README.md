@@ -36,15 +36,15 @@ TO DO:
 - [ ] (5) Obtain the spread (ask-bid/ask), top ten bids, top ten asks && publish it as a stream.
 
 # treeMap of the Project
-#pythonWay/{python Approach}
-#README.md
-#Carto.toml
-#src/{main.rs,config.json}
-#  |
-#   --> config/{read.rs, store.rs,config.ron} [DISCARDED, more minimalistic approach for config.json]
-#  |
-#   --> Exchanges/{binance.rs,bitstamp.rs,models_endpoint.rs}
-#  |
-#   --> Data/{server.rs}
-#  |
-#   --> Errors/{everything_goes_wrong_for_short.rs}
+pythonWay/{python Approach}
+README.md
+Carto.toml
+src/{main.rs,config.json}
+  |
+   --> config/{read.rs, store.rs,config.ron} [DISCARDED, more minimalistic approach for config.json]
+  |
+   --> Exchanges/{binance.rs,bitstamp.rs,models_endpoint.rs}
+  |
+   --> Data/{server.rs}
+  |
+   --> Errors/{everything_goes_wrong_for_short.rs}
