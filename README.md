@@ -6,13 +6,20 @@
 ### to have an image of what were the steps needed to do the challenge.
 
 Problem to solve:
-Connection to multiple exchanges, retrieve simultaneously currency pairs
-(i.e. BTC/USDT for binance or BTCUSD for bitstamp).
 
-Once stablished connection you need to get the bid-ask spread
+Provide liquidity to the market at the lowest cost possible, therefore
+we nees a system that reads the market and return the fair price of
+currencies. 
+
+By steps: we have to connect to multiple exchanges, retrieve simultaneously currency pairs
+(i.e. BTC/USDT for binance or BTCUSD for bitstamp).Once stablished connection you need to 
+get the bid-ask spread:
+
 Formula: (ask - bid) / ask
+
 This is done in order to obtain the "fair price" at the moment in
 which the market are assigning price to the assets.
+
 For strategies of market making, where you need to provide volume
 to the market (make more easier for investors to operate or be able
 to buy/sell more easily) you need to acknowledge the fair price to
