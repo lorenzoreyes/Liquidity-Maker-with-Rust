@@ -23,8 +23,9 @@ pub fn main() {
     let binance_url = format!("{}/stream?streams={}@depth10@100ms/{}@depth10@100ms/{}@depth10@100ms/{}@depth10@100ms/{}@depth10@100ms", BINANCE_WS_API,&ticket.as_str().unwrap(),&ticket2.as_str().unwrap(),&ticket3.as_str().unwrap(),ticket4.as_str().unwrap(),ticket5.as_str().unwrap());
 
     
-    println!("\n\n\nYou requested the following stream:\n{}\n\n\n", binance_url);
+    println!("\n\n\nYou requested the following stream:\n{:#?}\n\n\n", binance_url);
 
+    
     let (mut socket, response) = connect(Url::parse(&binance_url).unwrap()).expect("Can't connect.");
 
     // Loop to connect and parse messages
@@ -38,9 +39,9 @@ pub fn main() {
         let parsed: DepthStreamWrapper = serde_json::from_str(&msg).expect("Can't parse");
 
         //println!("Parsed:\t{:#?}\nMessage:\t{:#?}",parsed,msg);
-        for i in 0..parsed.data.asks.len() {
-            println!("\nExchange: Binance,\tTime: {}",Utc::now().format("%a %b %e %T %Y"));
-            println!("Pair: {},\tSpread%: {},\nBid$: {}, BidQ: {}, Ask$: {}, AskQ: {}",
+        for i in 0..1 { //parsed.data.asks.len() {
+            println!("\nExchange: Binance,\t\tTime: {}",Utc::now().format("%a %b %e %T %Y"));
+            println!("Pair: {},\t\t\tSpread%: {},\nBid$: {}, BidQ: {}, Ask$: {}, AskQ: {}",
                      parsed.stream.as_str().to_uppercase().replace("@DEPTH10@100MS",""),
                      (parsed.data.asks[i].price - parsed.data.bids[i].price) / parsed.data.asks[i].price,
                      parsed.data.bids[i].price,

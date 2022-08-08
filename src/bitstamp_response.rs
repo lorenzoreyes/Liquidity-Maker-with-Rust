@@ -1,5 +1,6 @@
 use serde::de;
-use serde::{Deserialize, Deserializer};
+use serde::{Serialize, Deserialize, Deserializer};
+use rust_decimal::Decimal;
 
 #[derive(Debug, Deserialize)]
 pub struct Response {
@@ -16,19 +17,10 @@ pub struct Data {
     pub asks: Vec<Orders>,
 }
 
-#[derive(Debug,Deserialize)]
+#[derive(Debug, Deserialize, Serialize, PartialEq, Clone)]
 pub struct Orders {
-    #[serde(deserialize_with = "de_float_from_str")]
-    pub price: f32,
-    #[serde(deserialize_with = "de_float_from_str")]
-    pub size: f32,
-}
-
-pub fn de_float_from_str<'a, D>(deserializer: D) -> Result<f32, D::Error> where
-D: Deserializer<'a>,
-{
-    let str_val = String::deserialize(deserializer)?;
-    str_val.parse::<f32>().map_err(de::Error::custom)
+    pub price: Decimal,
+    pub size: Decimal,
 }
 
 

@@ -1,0 +1,13 @@
+List of Observations && To-Do
+
+1 ) Make main call async of both threads binance && bitstamp streams,
+For now its just to have an idea of a desirable result.
+
+2 ) For the loop iterate the values of the variables to vector of each
+crypto & make it mutable(push oldest insert newest), print out the latest value
+and refresh screen without crashing the order.
+
+
+config.json : make a struct iterable to {key:val} without taking care of it size
+so it can map whole values and the rest of the calls adapt to it.
+

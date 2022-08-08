@@ -8,12 +8,13 @@ use chrono::{DateTime,Utc};
 use chrono::prelude::*;
 use dateparser::datetime::Parse;
 
-use crate::bitstamp_response;
+mod bitstamp_response;
 use bitstamp_response::Response;
 
 
+
 // for test change the name of the function to main 
-fn main() {
+pub fn bitstamp_streams() {
     let file = File::open("src/config.json").expect("Not JSON format");
     let json: serde_json::Value = from_reader(file).expect("file should be a proper json");
     let ticket  = json.get("ticket").clone().expect("cannot read");
@@ -56,7 +57,7 @@ fn main() {
             Result::Ok(ref _x) => 
                 for i in 0..10 { //parsed.as_ref().ok().unwrap().data.asks[0..50] {
                     println!("Exchange: Bitstamp,\t Time {} UTC",Utc::now().format("%Y-%m-%d %H:%M:%S"));//("%a %b %e %T %Y"));
-                    println!("Pair: {:?},\tSpread%: {:?},\nBid$: {:?}, BidQ: {:?}, Ask$: {:?}, AskQ: {:?}\nMicroTimestamp: {:#?}",
+                    println!("Pair: {:?},\tSpread%: {:?},\nBid$: {:?}, BidQ: {:?}, Ask$: {:?}, AskQ: {:?}", //\nMicroTimestamp: {:#?}",
                              parsed.as_ref().ok().unwrap().channel.as_str().to_uppercase().replace("ORDER_BOOK_",""),
                              (parsed.as_ref().ok().unwrap().data.asks[i].price - parsed.as_ref().ok().unwrap().data.bids[i].price) / parsed.as_ref().ok().unwrap().data.asks[i].price,
                              parsed.as_ref().ok().unwrap().data.bids[i].price,
@@ -64,7 +65,7 @@ fn main() {
                              parsed.as_ref().ok().unwrap().data.asks[i].price, 
                              parsed.as_ref().ok().unwrap().data.asks[i].size,
                              //parsed.as_ref().ok().unwrap().data.microtimestamp.as_str().parse::<i64>().unwrap(),
-                             NaiveDateTime::from_timestamp(parsed.as_ref().ok().unwrap().data.timestamp.as_str().parse::<i64>().unwrap(),0),
+                             //NaiveDateTime::from_timestamp(parsed.as_ref().ok().unwrap().data.timestamp.as_str().parse::<i64>().unwrap(),0),
                     )},
             Result::Err(_x) => println!("Error"),
         }

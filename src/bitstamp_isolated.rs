@@ -7,7 +7,6 @@ use url::Url;
 use chrono::{DateTime,Utc};
 use chrono::prelude::*;
 use dateparser::datetime::Parse;
-
 mod bitstamp_response;
 use bitstamp_response::Response;
 
@@ -54,17 +53,17 @@ fn main() {
         let parsed: Result<Response, serde_json::Error> = serde_json::from_str(msg.to_text().unwrap());
         match parsed {
             Result::Ok(ref _x) => 
-                for i in 0..10 { //parsed.as_ref().ok().unwrap().data.asks[0..50] {
-                    println!("Exchange: Bitstamp,\t Time {} UTC",Utc::now().format("%Y-%m-%d %H:%M:%S"));//("%a %b %e %T %Y"));
+                for i in 0..1 { //parsed.data.asks[0..50] {
+                    let parsed = parsed.as_ref().ok().unwrap(); // for readability
+                    println!("Exchange: Bitstamp,\t Time {} UTC",Utc::now().format("%c %p"));
                     println!("Pair: {:?},\tSpread%: {:?},\nBid$: {:?}, BidQ: {:?}, Ask$: {:?}, AskQ: {:?}\nMicroTimestamp: {:#?}",
-                             parsed.as_ref().ok().unwrap().channel.as_str().to_uppercase().replace("ORDER_BOOK_",""),
-                             (parsed.as_ref().ok().unwrap().data.asks[i].price - parsed.as_ref().ok().unwrap().data.bids[i].price) / parsed.as_ref().ok().unwrap().data.asks[i].price,
-                             parsed.as_ref().ok().unwrap().data.bids[i].price,
-                             parsed.as_ref().ok().unwrap().data.bids[i].size,
-                             parsed.as_ref().ok().unwrap().data.asks[i].price, 
-                             parsed.as_ref().ok().unwrap().data.asks[i].size,
-                             //parsed.as_ref().ok().unwrap().data.microtimestamp.as_str().parse::<i64>().unwrap(),
-                             NaiveDateTime::from_timestamp(parsed.as_ref().ok().unwrap().data.timestamp.as_str().parse::<i64>().unwrap(),0),
+                             parsed.channel.as_str().to_uppercase().replace("ORDER_BOOK_",""),
+                             (parsed.data.asks[i].price - parsed.data.bids[i].price) / parsed.data.asks[i].price,
+                             parsed.data.bids[i].price,
+                             parsed.data.bids[i].size,
+                             parsed.data.asks[i].price, 
+                             parsed.data.asks[i].size,
+                             NaiveDateTime::from_timestamp(parsed.data.timestamp.as_str().parse::<i64>().unwrap(),0)
                     )},
             Result::Err(_x) => println!("Error"),
         }
