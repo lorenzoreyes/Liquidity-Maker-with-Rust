@@ -85,12 +85,19 @@ as you are prepare not only for the success but also for the failure.
 
 As soon as you achieve a functionality you will have to ask yourself before adding
 it to your program the following questions:
+
 What is the goal of the program? What problem you try to solve?
+
 Describe it plain and simple.
+
 what is the vision/approach you are following doing this?
-is it readable/simple? YOU DO NOT CODE FOR YOU OR ALONE.
+
+is it readable/simple? 
+
 what value it adds this version compared to the previous one?
+
 how can i debug it? where does it crash?
+
 what updates demands in the rest of the code in order to implement it?
 
 Once you end a program, it will be the sum the whole process and not only
