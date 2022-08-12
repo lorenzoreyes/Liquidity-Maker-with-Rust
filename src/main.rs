@@ -11,13 +11,12 @@ use std::fs::File;
 
 //mod configurable;
 //use configurable::binance_url;
-mod binance;
-use binance::binance_streams;
 mod binance_response;
 use binance_response::DepthStreamWrapper;
 mod bitstamp_response;
 use bitstamp_response::Response;
-
+mod socket;
+use socket::{bitstamp_socket,binance_url};
 
 /* NOTE premature approach
  * I will retrieve binance streams
@@ -33,14 +32,21 @@ use bitstamp_response::Response;
 struct orderBook {
     exchange: String,
     ticket: String,
-    bids: Vec<price,size>,
-    asks: Vec<price,size>,
+    bids: Depth,
+    asks: Depth,
     spread: (asks - bids) / asks,
     time: Utc::now().format("%c %r"),
 }
 
+struct Depth {
+    price: Vec<Decimal>,
+    size: Vec<Decimal>,
+}
+
+// make orderbook for each pair requested
+
 fn print_book(book: &orderbook) {
-    clearscreen>>clear().expect("Error clearing");
+    clearscreen::clear().expect("Error clearing");
 
     println!("Exchange:\t\t{}", book.exchange);
     println!("Symbol:\t{}.\tSpread%:\t{}",book.ticket,book.spread);
@@ -51,7 +57,7 @@ fn print_book(book: &orderbook) {
     let mut i = 0;
     for bid in bids.len() {
         if book.asks.len() > i {
-            println!("Bid$: {:05.4}, BidQ: {:05.4}, Ask$: {:05.4}, AskQ: {:05.4}\n",
+            println!("Bid$: {:05.4}, BidQ: {:05.4},̣\t\t Ask$: {:05.4}, AskQ: {:05.4}\n",
                      book.bids.price,
                      book.bids.size,
                      book.asks.price,
@@ -72,46 +78,10 @@ fn print_book(book: &orderbook) {
 */
 
 fn main() {
-    //let binance = String::from(binance_url());
+    let mut socket_binance = binance_url();
 
-    let binance_url = binance_streams("binance_url".to_string());
-    
-    let (mut socket_binance, response) = connect(Url::parse(&binance_url).unwrap()).expect("Can't connect.");
+    let mut socket_bitstamp = bitstamp_socket();
 
-    let file = File::open("src/config.json").expect("Not JSON format");
-    let json: serde_json::Value = from_reader(file).expect("file should be a proper json");
-    let ticket  = json.get("ticket").clone().expect("cannot read");
-    let ticket: String = String::from("order_book_") + ticket.as_str().unwrap();
-    let ticket2 = json.get("ticket2").clone().expect("cannot read");
-    let ticket2: String = String::from("order_book_") + ticket2.as_str().unwrap();
-    let ticket3 = json.get("ticket3").clone().expect("cannot read");
-    let ticket3: String = String::from("order_book_") + ticket3.as_str().unwrap();
-    let ticket4 = json.get("ticket4").clone().expect("cannot read");
-    let ticket4: String = String::from("order_book_") + ticket4.as_str().unwrap();
-    let ticket5 = json.get("ticket5").clone().expect("cannot read");
-    let ticket5: String = String::from("order_book_") + ticket5.as_str().unwrap();
-    let ticket = ticket.as_str().replace("usdt","usd");
-    let ticket2 = ticket2.as_str().replace("usdt","usd");
-    let ticket3 = ticket3.as_str().replace("usdt","usd");
-    let ticket4 = ticket4.as_str().replace("usdt","usd");
-    let ticket5 = ticket5.as_str().replace("usdt","usd");
-    println!("Tickets are: {}, {}, {}, {}, {}",
-        &ticket.as_str(),
-        &ticket2.as_str(),
-        &ticket3.as_str(),
-        &ticket4.as_str(),
-        &ticket5.as_str());
-    // Connect to Bitstamp.net
-    let (mut socket_bitstamp, _response) =
-        connect(Url::parse("wss://ws.bitstamp.net").unwrap()).expect("Can't connect");
-
-    // Subscribe to Live Trades channel for BTC/USD
-    socket_bitstamp.write_message(Message::Text(json!({"event": "bts:subscribe","data": {"channel":  &ticket.as_str() }}).to_string(),).into(),).expect("Error sending message");
-    socket_bitstamp.write_message(Message::Text(json!({"event": "bts:subscribe","data": {"channel":  &ticket2.as_str() }}).to_string(),).into(),).expect("Error sending message");
-    socket_bitstamp.write_message(Message::Text(json!({"event": "bts:subscribe","data": {"channel" : &ticket3.as_str() }}).to_string(),).into(),).expect("Error sending message");
-    socket_bitstamp.write_message(Message::Text(json!({"event": "bts:subscribe","data": {"channel":  &ticket4.as_str() }}).to_string(),).into(),).expect("Error sending message");
-    socket_bitstamp.write_message(Message::Text(json!({"event": "bts:subscribe","data": {"channel" : &ticket5.as_str() }}).to_string(),).into(),).expect("Error sending message");
- 
     loop {
         // Read message from socket_bitstamp
         let msg_bitstamp = socket_bitstamp.read_message().expect("Error reading message");
@@ -129,7 +99,7 @@ fn main() {
         
         match bits {
             Result::Ok(ref _x) => 
-                for i in 0..1 { //parsed.data.asks[0..50] {
+                for i in 0..5 { //parsed.data.asks[0..50] {
                     let bits = bits.as_ref().ok().unwrap(); // for readability
                     println!("\nExchange: Bitstamp,\t Time {} UTC",Utc::now().format("%c %p"));
                     println!("Pair: {},\t\t\tSpread%: {:02.6},\nBid$: {:05.4}, BidQ: {:05.4}, Ask$: {:05.4}, AskQ: {:05.4}\nMicroTimestamp: {:#?}",
