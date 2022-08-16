@@ -33,6 +33,9 @@ provide liquidity at the minimum expense.
 cargo run --bin main
 
 path = "src/main.rs"
+
+
+edit src/config2.sjon to stablish the list of coins to read
 ```
 
 # Binance
