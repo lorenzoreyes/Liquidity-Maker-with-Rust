@@ -33,3 +33,4 @@ tokio-tungstenite = { version = "0.17.1", features = ["native-tls"] }
 url = "2.1.0"
 log = "0.4.17"
 rust_decimal = "1.26.0"
+clearscreen = "1.0.10"

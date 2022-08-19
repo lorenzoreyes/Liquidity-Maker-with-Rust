@@ -18,65 +18,6 @@ use bitstamp_response::Response;
 mod socket;
 use socket::{bitstamp_socket,binance_url};
 
-/* NOTE premature approach
- * I will retrieve binance streams
- * request bitstamp messages
- * generate socket_bitstamps for each exchange here
- * first wanna generate socket_bitstamps here in order if it crash it crash at this file
- * will use threads to spawn them
- */
-
-// Pass data from endpoint to a common struct with gathering
-// Exchange, ticket retrieved, bids, asks and calculate the spread
-/*
-struct orderBook {
-    exchange: String,
-    ticket: String,
-    bids: Depth,
-    asks: Depth,
-    spread: (asks - bids) / asks,
-    time: Utc::now().format("%c %r"),
-}
-
-struct Depth {
-    price: Vec<Decimal>,
-    size: Vec<Decimal>,
-}
-
-// make orderbook for each pair requested
-
-fn print_book(book: &orderbook) {
-    clearscreen::clear().expect("Error clearing");
-
-    println!("Exchange:\t\t{}", book.exchange);
-    println!("Symbol:\t{}.\tSpread%:\t{}",book.ticket,book.spread);
-    println!("Time:\t{} UTC\n\n", book.time);
-    println!("\tBids\t\tAsks");
-
-    // Dynamic vectors iterators to store && update data
-    let mut i = 0;
-    for bid in bids.len() {
-        if book.asks.len() > i {
-            println!("Bid$: {:05.4}, BidQ: {:05.4},̣\t\t Ask$: {:05.4}, AskQ: {:05.4}\n",
-                     book.bids.price,
-                     book.bids.size,
-                     book.asks.price,
-                     book.asks,size
-                     );
-        } else { // if update comes from the other side
-            println!("Bid$: {:05.4}, BidQ: {:05.4}",
-                     book.bid.price,
-                     book.bid.size
-                     );
-        }
-        i + 1;
-        if i > 5 { // as you will only get 5 top bid && asks
-            break;
-        }
-    }
-}
-*/
-
 fn main() {
     let mut socket_binance = binance_url();
 
@@ -90,7 +31,7 @@ fn main() {
         let msg_binance = socket_binance.read_message().expect("Cannot read message");
         let msg_binance = match msg_binance {
             tungstenite::Message::Text(s) => s,
-            _ => { panic!("Error getting text");}
+            _ => continue,//{ panic!("Error getting text");}
         };
         
         //Parse them into proper structs
@@ -99,22 +40,35 @@ fn main() {
         
         match bits {
             Result::Ok(ref _x) => 
-                for i in 0..5 { //parsed.data.asks[0..50] {
+                for i in 0..10 { //parsed.data.asks[0..50] {
                     let bits = bits.as_ref().ok().unwrap(); // for readability
-                    println!("\nExchange: Bitstamp,\t Time {} UTC",Utc::now().format("%c %p"));
-                    println!("Pair: {},\t\t\tSpread%: {:02.6},\nBid$: {:05.4}, BidQ: {:05.4}, Ask$: {:05.4}, AskQ: {:05.4}\nMicroTimestamp: {:#?}",
-                             bits.channel.as_str().to_uppercase().replace("ORDER_BOOK_",""),
-                             (bits.data.asks[i].price - bits.data.bids[i].price) / bits.data.asks[i].price,
+                    if i == 0 {
+                        println!("\nPair: {},\tExchange: Bitstamp,\t Time {} UTC",
+                                 bits.channel.as_str().to_uppercase().replace("ORDER_BOOK_",""),
+                                 Utc::now().format("%c %p"));
+                        println!("Pair: {},\tExchange: BINANCE,\t Time {} UTC\n",
+                                 bins.stream.as_str().to_uppercase().replace("T@DEPTH10@100MS",""),
+                                 Utc::now().format("%c %p"));
+                        println!("BINANCE  Fair$: {:04.04}\t\tSpread$: {:.5},\tSpread%: {:.5}",
+                             (bins.data.asks[i].price - bins.data.bids[i].price) + bins.data.bids[i].price,
+                             (bins.data.asks[i].price - bins.data.bids[i].price),
+                             (bins.data.asks[i].price - bins.data.bids[i].price) / bins.data.asks[i].price
+                             );
+ 
+                        println!("BITSTAMP Fair$: {:04.04}\t\tSpread$: {:.5},\tSpread%: {:.5}\n",
+                             (bits.data.asks[i].price - bits.data.bids[i].price) + bits.data.bids[i].price,
+                             (bits.data.asks[i].price - bits.data.bids[i].price),
+                             (bits.data.asks[i].price - bits.data.bids[i].price) / bits.data.asks[i].price
+                             );
+                    }
+                    println!("Bitstamp\tBid: ${:04.04}, BQuant: {:04.2},\tAsk: ${:04.04}, AQuant: {:04.2}",
                              bits.data.bids[i].price,
                              bits.data.bids[i].size,
                              bits.data.asks[i].price, 
                              bits.data.asks[i].size,
-                             NaiveDateTime::from_timestamp(bits.data.timestamp.as_str().parse::<i64>().unwrap(),0),
                              );
-                    println!("\nExchange: Binance,\t\tTime: {}",Utc::now().format("%c %p"));
-                    println!("Pair: {},\t\t\tSpread%: {:05.4},\nBid$: {:05.4}, BidQ: {:05.4}, Ask$: {:05.4}, AskQ: {:05.4}\n",
-                                bins.stream.as_str().to_uppercase().replace("@DEPTH10@100MS",""),
-                                (bins.data.asks[i].price - bins.data.bids[i].price) / bins.data.asks[i].price,
+                    
+                    println!("Binance \tBid: ${:04.04}, BQuant: {:04.2},\tAsk: ${:04.04}, AQuant: {:04.2}",
                                 bins.data.bids[i].price,
                                 bins.data.bids[i].size,
                                 bins.data.asks[i].price, 
@@ -122,7 +76,7 @@ fn main() {
                                 )
  
                 },
-            Result::Err(_x) => println!("Error"),
+            Result::Err(_x) => println!("Bitstamp Error"),
             }
         }
     

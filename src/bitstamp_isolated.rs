@@ -53,9 +53,31 @@ fn main() {
         let parsed: Result<Response, serde_json::Error> = serde_json::from_str(msg.to_text().unwrap());
         match parsed {
             Result::Ok(ref _x) => 
-                for i in 0..1 { //parsed.data.asks[0..50] {
-                    let parsed = parsed.as_ref().ok().unwrap(); // for readability
+                for i in 0..10 { //parsed.data.asks[0..50] {
+                    let bits = parsed.as_ref().ok().unwrap(); // for readability
+                    if i == 0 {
+                        println!("\nPair: {},\tExchange: Bitstamp,\t Time {} UTC\n",
+                                 bits.channel.as_str().to_uppercase().replace("ORDER_BOOK_",""),
+                                 Utc::now().format("%c %p"));
+                        println!("Spread$: {:08.4},\t\t\tSpread%: {:08.4}",
+                             (bits.data.asks[i].price - bits.data.bids[i].price),
+                             (bits.data.asks[i].price - bits.data.bids[i].price) / bits.data.asks[i].price
+                             );
+                    }
+                              
+                    println!("Bid$: {:08.4}, BidQ: {:08.4},\tAsk$: {:08.4}, AskQ: {:08.4}",
+                             bits.data.bids[i].price,
+                             bits.data.bids[i].size,
+                             bits.data.asks[i].price, 
+                             bits.data.asks[i].size,
+                             );
+                },                                                                          
+                    /*                                            
                     println!("Exchange: Bitstamp,\t Time {} UTC",Utc::now().format("%c %p"));
+                    if i == 0 { println!("Spread$:\t{}.\t\tSpread%: {}",
+                             (parsed.data.asks[i].price - parsed.data.bids[i].price),
+                             (parsed.data.asks[i].price - parsed.data.bids[i].price) / parsed.data.asks[i].price,
+                             },
                     println!("Pair: {:?},\tSpread%: {:?},\nBid$: {:?}, BidQ: {:?}, Ask$: {:?}, AskQ: {:?}\nMicroTimestamp: {:#?}",
                              parsed.channel.as_str().to_uppercase().replace("ORDER_BOOK_",""),
                              (parsed.data.asks[i].price - parsed.data.bids[i].price) / parsed.data.asks[i].price,
@@ -65,6 +87,7 @@ fn main() {
                              parsed.data.asks[i].size,
                              NaiveDateTime::from_timestamp(parsed.data.timestamp.as_str().parse::<i64>().unwrap(),0)
                     )},
+                    */
             Result::Err(_x) => println!("Error"),
         }
     }

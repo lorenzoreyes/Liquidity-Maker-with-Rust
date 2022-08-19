@@ -38,12 +38,19 @@ pub fn main() {
 
         let parsed: DepthStreamWrapper = serde_json::from_str(&msg).expect("Can't parse");
 
-        //println!("Parsed:\t{:#?}\nMessage:\t{:#?}",parsed,msg);
-        for i in 0..1 { //parsed.data.asks.len() {
-            println!("\nExchange: Binance,\t\tTime: {}",Utc::now().format("%a %b %e %T %Y"));
-            println!("Pair: {},\t\t\tSpread%: {},\nBid$: {}, BidQ: {}, Ask$: {}, AskQ: {}",
-                     parsed.stream.as_str().to_uppercase().replace("@DEPTH10@100MS",""),
+        for i in 0..5 { //parsed.data.asks.len() {
+ 
+            if i == 0 { 
+                println!("\n\nPair: {},\tExchange: Binance,\tTime: {}\n",
+                         parsed.stream.as_str().to_uppercase().replace("@DEPTH10@100MS",""), 
+                         Utc::now().format("%a %b %e %T %Y"));
+ 
+                println!("Spread$:\t{:08.2}.\t\tSpread%:\t{:08.2}",
+                     (parsed.data.asks[i].price - parsed.data.bids[i].price),
                      (parsed.data.asks[i].price - parsed.data.bids[i].price) / parsed.data.asks[i].price,
+                     );}
+
+            println!("Bid$:{:08.8}, BidQ: {:08.2}\tAsk$:{:08.8} AskQ: {:08.2}",
                      parsed.data.bids[i].price,
                      parsed.data.bids[i].size,
                      parsed.data.asks[i].price, 
