@@ -37,6 +37,11 @@ path = "src/main.rs"
 
 edit src/config2.sjon to stablish the list of coins to read
 ```
+# Output Terminal
+
+<img src="outputLiquid.png" width="100%" height="20%">
+
+
 
 # Binance
 ```bash
