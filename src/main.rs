@@ -39,45 +39,50 @@ fn main() {
         let bins: DepthStreamWrapper = serde_json::from_str(&msg_binance).expect("Can't parse");
         
         match bits {
-            Result::Ok(ref _x) => 
-                for i in 0..10 { //parsed.data.asks[0..50] {
+            Result::Ok(ref _x) =>
+                for i in 0..5 { //parsed.data.asks[0..50] {
                     let bits = bits.as_ref().ok().unwrap(); // for readability
-                    if i == 0 {
-                        println!("\nPair: {},\tExchange: Bitstamp,\t Time {} UTC",
+                    // pair-match
+                    if bits.channel.as_str().to_uppercase().replace("ORDER_BOOK_","") == bins.stream.as_str().to_uppercase().replace("T@DEPTH10@100MS","") {
+                        if i == 0 {
+                            println!("\nPair: {},\tExchange: Bitstamp,\t Time {} UTC",
                                  bits.channel.as_str().to_uppercase().replace("ORDER_BOOK_",""),
                                  Utc::now().format("%c %p"));
-                        println!("Pair: {},\tExchange: BINANCE,\t Time {} UTC\n",
+                            println!("Pair: {},\tExchange: BINANCE,\t Time {} UTC\n",
                                  bins.stream.as_str().to_uppercase().replace("T@DEPTH10@100MS",""),
                                  Utc::now().format("%c %p"));
-                        println!("BINANCE  Fair$: {:04.04}\t\tSpread$: {:.5},\tSpread%: {:.5}",
+                            println!("BINANCE  Fair$: {:04.04}\tSpread$: {:.5},\tSpread%: {:.5}",
                              (bins.data.asks[i].price - bins.data.bids[i].price) + bins.data.bids[i].price,
                              (bins.data.asks[i].price - bins.data.bids[i].price),
                              (bins.data.asks[i].price - bins.data.bids[i].price) / bins.data.asks[i].price
                              );
- 
-                        println!("BITSTAMP Fair$: {:04.04}\t\tSpread$: {:.5},\tSpread%: {:.5}\n",
+
+                            println!("BITSTAMP Fair$: {:04.04}\tSpread$: {:.5},\tSpread%: {:.5}\n",
                              (bits.data.asks[i].price - bits.data.bids[i].price) + bits.data.bids[i].price,
                              (bits.data.asks[i].price - bits.data.bids[i].price),
                              (bits.data.asks[i].price - bits.data.bids[i].price) / bits.data.asks[i].price
-                             );
-                    }
-                    println!("Bitstamp\tBid: ${:04.04}, BQuant: {:04.2},\tAsk: ${:04.04}, AQuant: {:04.2}",
+                                 );
+                        }
+                        println!("Bitstamp #{}\tBid: ${:04.04}, BQuant: {:04.2},\tAsk: ${:04.04}, AQuant: {:04.2}",
+                             i,
                              bits.data.bids[i].price,
                              bits.data.bids[i].size,
-                             bits.data.asks[i].price, 
+                             bits.data.asks[i].price,
                              bits.data.asks[i].size,
                              );
-                    
-                    println!("Binance \tBid: ${:04.04}, BQuant: {:04.2},\tAsk: ${:04.04}, AQuant: {:04.2}",
+
+                        println!("Binance  #{}\tBid: ${:04.04}, BQuant: {:04.2},\tAsk: ${:04.04}, AQuant: {:04.2}",
+                                i,
                                 bins.data.bids[i].price,
                                 bins.data.bids[i].size,
-                                bins.data.asks[i].price, 
+                                bins.data.asks[i].price,
                                 bins.data.asks[i].size
                                 )
- 
+                    }
+
                 },
             Result::Err(_x) => println!("Bitstamp Error"),
             }
         }
-    
+
 }
