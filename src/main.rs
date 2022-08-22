@@ -9,8 +9,6 @@ use std::thread;
 use futures::future;
 use std::fs::File;
 
-//mod configurable;
-//use configurable::binance_url;
 mod binance_response;
 use binance_response::DepthStreamWrapper;
 mod bitstamp_response;
@@ -39,9 +37,12 @@ fn main() {
         let bins: DepthStreamWrapper = serde_json::from_str(&msg_binance).expect("Can't parse");
         
         match bits {
-            Result::Ok(ref _x) =>
-                for i in 0..5 { //parsed.data.asks[0..50] {
-                    let bits = bits.as_ref().ok().unwrap(); // for readability
+            Result::Ok(ref _x) => _x,
+            Result::Err(_x) => continue,//println!("Bitstamp Error"),
+        };
+ 
+         for i in 0..10 {
+             let bits = bits.as_ref().ok().unwrap(); // for readability
                     // pair-match
                     if bits.channel.as_str().to_uppercase().replace("ORDER_BOOK_","") == bins.stream.as_str().to_uppercase().replace("T@DEPTH10@100MS","") {
                         if i == 0 {
@@ -64,7 +65,7 @@ fn main() {
                                  );
                         }
                         println!("Bitstamp #{}\tBid: ${:04.04}, BQuant: {:04.2},\tAsk: ${:04.04}, AQuant: {:04.2}",
-                             i,
+                             i + 1,
                              bits.data.bids[i].price,
                              bits.data.bids[i].size,
                              bits.data.asks[i].price,
@@ -72,7 +73,7 @@ fn main() {
                              );
 
                         println!("Binance  #{}\tBid: ${:04.04}, BQuant: {:04.2},\tAsk: ${:04.04}, AQuant: {:04.2}",
-                                i,
+                                i + 1,
                                 bins.data.bids[i].price,
                                 bins.data.bids[i].size,
                                 bins.data.asks[i].price,
@@ -80,9 +81,10 @@ fn main() {
                                 )
                     }
 
-                },
-            Result::Err(_x) => println!("Bitstamp Error"),
+
             }
+
+
         }
 
 }
