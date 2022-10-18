@@ -1,7 +1,0 @@
-python-binance
-pandas
-numpy
-matplotlib
-pylab
-yfinance
-pyRofex
